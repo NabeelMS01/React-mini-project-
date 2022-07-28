@@ -9,14 +9,22 @@ function AdminSideBar() {
   
   const navigate =useNavigate()
     const Menus = [
-      { title: "Dashboard", src: "dashboard",nav:'/admin' },
-      { title: "Approval reqests", src: "status",nav:'/admin-approval-req' },
-      { title: "Users", src: "profile",nav:'/admin-users' },
+      { title: "Dashboard", src: "dashboard",nav:'/admin/home' },
+      { title: "Approval reqests", src: "status",nav:'/admin/approval-req' },
+      { title: "Users", src: "profile",nav:'/admin/users' },
+      { title: "Logout", src: "logout",nav:'/admin/logout',onClick:true },
     ];
     const handleSelect=(index)=>{
       setSelectBtn(index)
       return selectBtn
     }
+const handleLogout =()=>{
+   localStorage.removeItem("adminInfo")
+   navigate('/admin')
+}
+
+
+    
   return (
     
    
@@ -27,7 +35,7 @@ function AdminSideBar() {
   >
     <img id={!open?'navicon':''}
       onClick={() => setOpen(!open)}
-      src="./icons/arrow-left-3099.png"
+      src="../icons/arrow-left-3099.png"
       className={`absolute cursor-pointer   rounded-full
 -right-3 top-9 w-7 border-2 border-dark-purple duration-500  ${
         !open && "rotate-180 "
@@ -51,7 +59,7 @@ function AdminSideBar() {
     </div>
     <ul className="pt-6 ">
       {Menus.map((menu, index) => (
-        <li onClick={()=>{    handleSelect(index); navigate(menu.nav);  }}
+        <li onClick={()=>{    handleSelect(index); menu.onClick ? handleLogout(): navigate(menu.nav);    }}
           className={`text-gray-100 font-bold text-sm flex items-center gap-x-4 ml-4 duration-200 mr-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${
             index === selectBtn && "bg-slate-500 duration-300"
           }`}
@@ -59,7 +67,7 @@ function AdminSideBar() {
         >
           <img 
             className="w-8 duration-500"
-            src={`./icons/${menu.src}.png`}
+            src={`../icons/${menu.src}.png`}
             alt=""
             title={`${menu.title}`}
           />

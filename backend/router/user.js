@@ -13,12 +13,13 @@ router.get('/',(req,res)=>{
  res.send('User')
 
 })
-router.get('/createuser',(req,res)=>{
+router.get('/signup',(req,res)=>{
 
-    res.send('User')
+    res.send('signup')
    
    }  )
-   router.post('/createuser',registerUser)
+   router.post('/signup',registerUser)
+
    router.post('/login',authUser)
    
  

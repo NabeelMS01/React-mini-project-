@@ -2,7 +2,7 @@ const express = require('express')
 
  require('dotenv').config()
 const connectDb =require('./config/db')
-
+const cors=require('cors')
  
 let app =express()
 connectDb()
@@ -13,7 +13,7 @@ let adminRouter =require('./router/admin')
 const { notFound, errorHandler } = require('./middleweres/errorMiddleweres')
 
 app.use(express.json())
-
+app.use(cors())
 
 app.use("/", userRouter);
 app.use("/admin", adminRouter);

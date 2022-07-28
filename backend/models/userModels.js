@@ -15,16 +15,26 @@ const userSchema =mongoose.Schema(
         unique:true,
 
     },
+    mobile:{
+        type:Number,
+        required:true    
+    },
     password:{
         type:String,
         required:true    
     },
+    status:{
+        type:Boolean,
+        default:true,
+        required:true,
+    }
      
 },{
     timestamps:true,
 })
  
 userSchema.pre('save',async function(next){
+    this.status=true
     if(!this.isModified('password')){
         next()
     }

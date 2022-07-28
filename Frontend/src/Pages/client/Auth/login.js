@@ -1,10 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import {useNavigate} from 'react-router-dom'
+import axios from "axios";
 import {
   AuthPageContext,
   AuthSignupPageContext,
 } from "../../../Context/AuthPageContext";
+import Spinner from "../../../Components/Spinner/Spinner";
 
 export default function Signin() {
+
+  const navigate =useNavigate()
   const { showSignup, setShowSignup } = useContext(AuthSignupPageContext);
 
   const { showLogin, setShowLogin } = useContext(AuthPageContext);
@@ -14,23 +19,23 @@ export default function Signin() {
   const [mobile, setMobile] = useState("");
   const [name, setName] = useState("");
 
-  const [errName, setErrName] = useState("");
   const [errEmail, setErrEmail] = useState("");
-  const [errMob, setErrMob] = useState("");
+
   const [errPass, setErrPass] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleName = () => {
-    if (name == "" || name == " ") {
-      setErrName("Name cannot be empty");
-      return false;
-    } else {
-      setErrName("");
-      return true;
-    }
-  };
+useEffect(()=>{
+  const userInfo =localStorage.getItem("userInfo");
+  if(userInfo){
+    navigate('/app')
+  }
+})
+
+
+
   const handlePass = () => {
-    if (password == "" || password == " ") {
+    if (password === "" || password === " ") {
       setErrPass("Password cannot be empty");
       return false;
     } else if (password.length < 6) {
@@ -41,20 +46,9 @@ export default function Signin() {
       return true;
     }
   };
-  const handleMobile = () => {
-    if (mobile == "" || mobile == " ") {
-      setErrMob("Mobile number cannot be empty");
-      return false;
-    } else if (mobile.length < 10) {
-      setErrMob("Invalid mobile number");
-      return false;
-    } else {
-      setErrMob("");
-      return true;
-    }
-  };
+
   const handleEmail = () => {
-    if (email == "" || email == " ") {
+    if (email === "" || email === " ") {
       setErrEmail("Email cannot be empty");
       return false;
     } else if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
@@ -66,17 +60,37 @@ export default function Signin() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (handleEmail() && handleMobile() && handleName() && handlePass()) {
+    if (handleEmail() && handlePass()) {
       console.log("accout created");
-    } else if (
-      !handleEmail() &&
-      !handleMobile() &&
-      !handleName() &&
-      !handlePass()
-    ) {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        setLoading(true);
+        const { data } = await axios.post(
+          "/login",
+          {
+            email: email,
+            password: password,
+          },
+          config
+        );
+
+        console.log(data);
+        localStorage.setItem("userInfo", JSON.stringify(data));
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setErrEmail("User credential is invalid");
+      }
+    } else if (!handleEmail() && !handlePass()) {
     }
   };
 
@@ -85,7 +99,9 @@ export default function Signin() {
       <div className=" justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div class=" relative p-4 w-full max-w-md h-full md:h-auto">
           {/*content*/}
+
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            {loading ? <Spinner /> : null}
             <button
               onClick={() => {
                 setShowLogin(false);
@@ -109,6 +125,7 @@ export default function Signin() {
               </svg>
               <span class="sr-only">Close modal</span>
             </button>
+
             <div class="py-6 px-6 lg:px-8">
               <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                 Sign in to our platform
@@ -132,6 +149,7 @@ export default function Signin() {
                   />
                   <span style={{ color: "red" }}>{errEmail}</span>
                 </div>
+
                 <div>
                   <label
                     for="password"
@@ -139,6 +157,7 @@ export default function Signin() {
                   >
                     Your password
                   </label>
+
                   <input
                     onKeyUp={() => handlePass()}
                     onChange={(e) => setPassword(e.target.value)}
@@ -150,6 +169,7 @@ export default function Signin() {
                   />
                   <span style={{ color: "red" }}>{errPass}</span>
                 </div>
+
                 <div class="flex justify-between">
                   <div class="flex items-start">
                     <div class="flex items-center h-5">

@@ -1,10 +1,23 @@
 
-
-import React from 'react'
+import {
+  AuthPageContext,
+  AuthSignupPageContext,
+} from "../Context/AuthPageContext";
+import React, { useContext } from 'react'
 import Header from '../Components/Header/Header'
 
 function Home() {
+  const { showSignup, setShowSignup } = useContext(AuthSignupPageContext);
+  const { showLogin, setShowLogin } = useContext(AuthPageContext);
+ useContext(()=>{
+  setShowSignup(false)
+  setShowLogin(false)
+
+ },[])
+
+
   return (
+
     <div>
    <Header/>
   
@@ -13,6 +26,8 @@ function Home() {
 
 
     </div>
+
+    
   )
 }
 

@@ -11,10 +11,15 @@ const navigate =useNavigate()
     { title: "Dashboard", src: "dashboard",nav:'/app' },
     { title: "Status", src: "status",nav:'/status' },
     { title: "Profile", src: "profile",nav:'/profile' },
+    { title: "Logout", src: "logout",nav:'logout',onClick:true },
   ];
   const handleSelect=(index)=>{
     setSelectBtn(index)
     return selectBtn
+  }
+  const handleOnclick=()=>{
+ localStorage.removeItem("userInfo");
+ navigate('/')
   }
 
   return (
@@ -50,16 +55,18 @@ const navigate =useNavigate()
         </div>
         <ul className="pt-6 ">
           {Menus.map((menu, index) => (
-            <li onClick={()=>{    handleSelect(index); navigate(menu.nav);  }}
+            <li onClick={()=>{   handleSelect(index);menu.onClick ? handleOnclick(): navigate(menu.nav);  }}
               className={`text-gray-500 font-bold text-sm flex items-center gap-x-4 ml-4 mr-4 cursor-pointer p-2 hover:bg-slate-200 rounded-md mt-2 ${
                 index === selectBtn && "bg-slate-200"
               }`}
               key={index}
             >
               <img
-                className="w-8 duration-500"
+                className="w-8  "
                 src={`./icons/${menu.src}.png`}
                 alt=""
+                title={`${menu.title}`}
+                
               />
               <span
                 className={`    ${
