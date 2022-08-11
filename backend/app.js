@@ -1,5 +1,5 @@
 const express = require('express')
-
+const session = require("express-session");
  require('dotenv').config()
 const connectDb =require('./config/db')
 const cors=require('cors')
@@ -13,6 +13,7 @@ let adminRouter =require('./router/admin')
 const { notFound, errorHandler } = require('./middleweres/errorMiddleweres')
 
 app.use(express.json())
+app.use(session({ secret: "key", cookie: { maxAge: 60000000 }, resave: false,saveUninitialized:false }));
 app.use(cors())
 
 app.use("/", userRouter);

@@ -3,22 +3,24 @@ import AdminSideBar from "../../Components/AdminSideBar/AdminSideBar";
 import AllUsers from "../../Components/AdminUsers/AllUsers";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { EditUserContext } from "../../Context/AuthPageContext";
+import { AddUserContext, EditUserContext } from "../../Context/AuthPageContext";
 import EditUser from "../../Components/AdminUsers/EditUser";
+import AddUser from "../../Components/AdminUsers/AddUser";
 
 function AdminUsers() {
+   const { showAddUser, setShowAddUser } = useContext(AddUserContext);
   const [allUsers, setAllUsers] = useState([]);
   const localstore = localStorage.getItem("adminInfo");
   const token = JSON.parse(localstore).token;
   const [state, setState] = useState(false);
   const { editUser, setEditUser } = useContext(EditUserContext);
   const [userData, setuserData] = useState([]);
-  console.log(editUser);
+  
   useEffect(() => {
     axios.get("/admin/usersData").then((response) => {
       setAllUsers(response.data.users);
     });
-  }, [state, editUser]);
+  }, [state, editUser,showAddUser]);
 
   const BlockUser = (_id) => {
     try {
@@ -88,18 +90,65 @@ function AdminUsers() {
       });
     } catch (error) {}
   };
+  const deleteUser = (_id) => {
+    try {
+      const config = {
+        headers: {
+          token: token,
+        },
+      };
+
+      Swal.fire({
+        title: "Do you Want to Delete this user?",
+        showDenyButton: true,
+        confirmButtonText: "yes",
+        denyButtonText: "No",
+        customClass: {
+          actions: "my-actions",
+          confirmButton: "order-2",
+          denyButton: "order-3",
+        },
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const { data } = await axios.patch(
+            "/admin/deleteUSer",
+
+            {
+              _id: _id,
+            },
+            config
+          );
+          console.log(data);
+          setState(state ? false : true);
+        }
+      });
+    } catch (error) {}
+  };
 
   return (
     <div className="flex ">
       <div className=" ">
         <AdminSideBar />
       </div>
+     {  showAddUser?   <AddUser/> :null}
       <div className="flex-1  mt-10  ">
-        <div>
+        <div> 
           <div className=" ">
             <div className="overflow-visible ">
+            <button onClick={()=>{
+           setShowAddUser(true);
+
+            }}
+         
+             
+            
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-10" >Add User</button>
               <div className="p-1.5 w-full inline-block align-middle">
+            
                 <div className="overflow-hidden border rounded-lg">
+    
+
+
                   <table className="table    text-gray-400 border-separate space-y-6 text-sm w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -132,6 +181,12 @@ function AdminUsers() {
                           className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                         >
                           Edit
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                        >
+                          Delete
                         </th>
                         <th
                           scope="col"
@@ -172,6 +227,23 @@ function AdminUsers() {
                               Edit
                             </a>
                           </td>
+                          <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+ 
+
+                            <a
+                              onClick={
+                                ()=>{
+                                  deleteUser(user._id)
+                                }
+                              }
+                              className="text-red-500  hover:text-red-700 cursor-pointer"
+                            >
+                              Delete  
+                            </a>
+                          </td>
+
+
+
                           <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                             {user.status ? (
                               <a

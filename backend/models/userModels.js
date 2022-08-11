@@ -48,6 +48,7 @@ userSchema.methods.matchPassword = async function (enteredPassword){
 }
 
 const User =mongoose.model('Users',userSchema)
+ 
 
 
 

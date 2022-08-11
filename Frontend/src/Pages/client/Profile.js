@@ -1,4 +1,6 @@
 import React from 'react'
+import ProfileComponent from '../../Components/Profile/ProfileComponent'
+ 
 import Sidebar from '../../Components/Sidebar/Sidebar'
 
 function Profile() {
@@ -11,7 +13,10 @@ function Profile() {
           <Sidebar/>
     
           
-    <h1>Profile</h1>
+          <div className='flex-1 h-screen '>
+     
+ 
+    </div>
           
           
           <div className="p-7  ">

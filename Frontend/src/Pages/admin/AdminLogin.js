@@ -4,12 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
 
-    useEffect(()=>{
-        const userInfo =localStorage.getItem("adminInfo");
-        if(userInfo){
-          navigate('/admin ')
-        }
-      },[]);
+  
 
   const navigate = useNavigate();
 

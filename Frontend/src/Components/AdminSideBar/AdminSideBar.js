@@ -1,16 +1,17 @@
 
 import './AdminSideBar.css'
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {useNavigate} from 'react-router-dom'
 import { SelectBtnContext } from "../../Context/SelectBtnContext";
+import Swal from 'sweetalert2';
 function AdminSideBar() {
     const [open, setOpen] = useState(false);
-    const [selectBtn,setSelectBtn]=useState(SelectBtnContext)
+    const {selectBtn,setSelectBtn}=useContext(SelectBtnContext)
   
   const navigate =useNavigate()
     const Menus = [
       { title: "Dashboard", src: "dashboard",nav:'/admin/home' },
-      { title: "Approval reqests", src: "status",nav:'/admin/approval-req' },
+      { title: "Seating", src: "status",nav:'/admin/approval-req' },
       { title: "Users", src: "profile",nav:'/admin/users' },
       { title: "Logout", src: "logout",nav:'/admin/logout',onClick:true },
     ];
@@ -19,8 +20,29 @@ function AdminSideBar() {
       return selectBtn
     }
 const handleLogout =()=>{
-   localStorage.removeItem("adminInfo")
+  
+  Swal.fire({
+    title: "Do you Want to  Logout?",
+    showDenyButton: true,
+    confirmButtonText: "yes",
+    denyButtonText: "No",
+    customClass: {
+      actions: "my-actions",
+      confirmButton: "order-2",
+      denyButton: "order-3",
+    },
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+       localStorage.removeItem("adminInfo")
    navigate('/admin')
+
+
+    }
+  });
+
+  
+
+
 }
 
 
@@ -31,7 +53,7 @@ const handleLogout =()=>{
     <div id={!open?"navbar":''}
     className={` ${
       open ? "w-72" : "w-20 "
-    } duration-300 h-screen p- pt-8   relative  shadow-2xl  bg-zinc-900 `}
+    } duration-300  p- pt-8   relative  shadow-2xl  bg-zinc-900   h-screen`}
   >
     <img id={!open?'navicon':''}
       onClick={() => setOpen(!open)}

@@ -64,7 +64,7 @@ useEffect(()=>{
     e.preventDefault();
 
     if (handleEmail() && handlePass()) {
-      console.log("accout created");
+ 
       try {
         const config = {
           headers: {
@@ -82,15 +82,16 @@ useEffect(()=>{
           config
         );
 
-        console.log(data);
+  
         localStorage.setItem("userInfo", JSON.stringify(data));
 
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        setErrEmail("User credential is invalid");
+        setErrEmail(error.response.data.message);
       }
     } else if (!handleEmail() && !handlePass()) {
+      
     }
   };
 
@@ -98,7 +99,7 @@ useEffect(()=>{
     <>
       <div className=" justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div class=" relative p-4 w-full max-w-md h-full md:h-auto">
-          {/*content*/}
+        
 
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             {loading ? <Spinner /> : null}
